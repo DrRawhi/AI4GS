@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI4ALL: AI For Government Services</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0b0f3c, #ffffff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 10px;
+    color: #1a1a1a;
+  }
+
+  .status {
+    margin: 20px 0;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .valid {
+    background: #e6f7f0;
+    color: #0a8f68;
+  }
+
+  .invalid {
+    background: #fdecea;
+    color: #c8102e;
+  }
+
+  .info {
+    margin-top: 15px;
+    font-size: 16px;
+  }
+
+  .label {
+    font-weight: bold;
+  }
+
+  .footer {
+    margin-top: 25px;
+    font-size: 13px;
+    color: #777;
+  }
+
+  .btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #c8102e;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="card">
+  <h1>AI4ALL: AI For Government Services</h1>
+  <p>Certificate Verification</p>
+
+  <div id="status" class="status">Checking...</div>
+
+  <div class="info">
+    <p><span class="label">Name:</span> <span id="participantName">-</span></p>
+    <p><span class="label">Certificate ID:</span> <span id="certificateId">-</span></p>
+    <p><span class="label">Workshop:</span> AI4GS (Stage1): Foundations of Agentic AI and Custom GPTs</p>
+  </div>
+
+  <a class="btn" href="https://drrawhi.github.io/AI4GS/" target="_blank">
+    Visit Workshop Website
+  </a>
+
+  <div class="footer">
+    UAEU – College of Information Technology
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const validCertificates = [
+    { id: "AI4GS-JULY-2026-001", name: "Rawhi Alrae" },
+    { id: "AI4GS-JULY-2026-002", name: "Rawhi2" }
+];
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || "";
+  const name = params.get("name") || "";
+
+  const statusBox = document.getElementById("status");
+  const participantName = document.getElementById("participantName");
+  const certificateId = document.getElementById("certificateId");
+
+  const matched = validCertificates.find(cert =>
+    cert.id.toLowerCase() === id.toLowerCase() &&
+    cert.name.toLowerCase().trim() === name.toLowerCase().trim()
+  );
+
+  if (matched) {
+    statusBox.innerHTML = "✅ Certificate Verified";
+    statusBox.className = "status valid";
+
+    participantName.textContent = matched.name;
+    certificateId.textContent = matched.id;
+  } else {
+    statusBox.innerHTML = "❌ Certificate Not Verified";
+    statusBox.className = "status invalid";
+
+    participantName.textContent = name || "Not provided";
+    certificateId.textContent = id || "Not provided";
+  }
+
+});
+</script>
+
+</body>
+</html>
