@@ -116,8 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const certificateId = document.getElementById("certificateId");
 
   const matched = validCertificates.find(cert =>
-    cert.id.toLowerCase() === id.toLowerCase() &&
-    cert.name.toLowerCase().trim() === name.toLowerCase().trim()
+    cert.id.toLowerCase() === id.toLowerCase()
   );
 
   if (matched) {
