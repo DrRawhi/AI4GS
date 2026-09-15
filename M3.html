@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI4ALL Module 3 Interactive Handout</title>
+  <meta name="description" content="Interactive participant handout for Module 3: Data-Driven Government Decision Support with AI.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23c8102e'/%3E%3Cpath d='M16 44 29 16h7l12 28h-8l-2-6H26l-2 6Zm13-13h7l-3-9Z' fill='white'/%3E%3C/svg%3E">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --red: #c8102e; --red-dark: #8e0b21; --red-soft: #fff3f5;
+      --blue: #245eb5; --blue-dark: #173f7c; --blue-soft: #eef5ff;
+      --ink: #172033; --muted: #657084; --line: #dce2ea; --soft: #f5f7fa;
+      --white: #ffffff; --success: #16845b; --shadow: 0 10px 30px rgba(23,32,51,.09);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--soft); color: var(--ink); font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.55; }
+    button, input, textarea, select { font: inherit; }
+    button, input[type="radio"], input[type="checkbox"], input[type="file"], select { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(36,94,181,.28); outline-offset: 2px; }
+    .brand-strip { height: 7px; background: linear-gradient(90deg,var(--red) 0 42%,#e7525e 42% 56%,var(--blue) 56% 100%); }
+    .header { min-height: 102px; background: var(--white); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; padding: 16px clamp(18px,4vw,52px); }
+    .program-mark { display: flex; align-items: center; gap: 12px; color: var(--red); font-weight: 800; letter-spacing: .02em; white-space: nowrap; }
+    .mark-box { width: 45px; height: 45px; border-radius: 10px; display: grid; place-items: center; color: var(--white); background: var(--red); font-size: 1.15rem; letter-spacing: -.06em; }
+    .header-title { text-align: center; min-width: 0; }
+    .header-title h1 { margin: 0; color: var(--red); font-size: clamp(1.25rem,2.2vw,1.9rem); line-height: 1.2; }
+    .header-title p { margin: 5px 0 0; color: var(--ink); font-weight: 700; }
+    .save-status { min-width: 112px; color: var(--muted); text-align: right; font-size: .88rem; }
+    .save-status::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--success); }
+    .workspace { display: grid; grid-template-columns: 304px minmax(0,1fr); min-height: calc(100vh - 109px); }
+    .sidebar { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--line); background: var(--white); padding: 24px 20px; }
+    .side-label { margin: 0 0 5px; color: var(--muted); font-size: .84rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .progress-line { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+    .progress-line strong { font-size: 1.05rem; }
+    .progress-line span { color: var(--red); font-weight: 800; }
+    .progress-track { height: 10px; margin: 11px 0 8px; overflow: hidden; border-radius: 99px; background: #e8ecf2; }
+    .progress-bar { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg,var(--red),#eb5362); transition: width .25s ease; }
+    .progress-hint { margin: 0; color: var(--muted); font-size: .82rem; }
+    .nav-list { display: grid; gap: 9px; margin-top: 23px; }
+    .nav-btn { width: 100%; min-height: 58px; display: grid; grid-template-columns: 32px 1fr 18px; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--ink); padding: 10px 11px; text-align: left; transition: border-color .2s,background .2s,transform .2s; }
+    .nav-btn:hover { border-color: #b6c1d0; transform: translateX(2px); }
+    .nav-btn.active { color: var(--red); border-color: var(--red); background: var(--red-soft); }
+    .nav-btn.done .nav-number { background: var(--success); }
+    .nav-number { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: var(--blue); color: var(--white); font-weight: 800; font-size: .85rem; }
+    .nav-label { font-weight: 700; line-height: 1.25; font-size: .92rem; }
+    .nav-check { color: var(--success); font-weight: 900; opacity: 0; }
+    .nav-btn.done .nav-check { opacity: 1; }
+    .privacy-note { margin-top: 22px; padding: 12px; border-radius: 10px; background: var(--blue-soft); color: var(--blue-dark); font-size: .8rem; }
+    .clear-btn { width: 100%; margin-top: 12px; border: 0; background: transparent; color: var(--muted); text-decoration: underline; font-size: .82rem; }
+    main { width: min(1050px,100%); margin: 0 auto; padding: 28px clamp(18px,4vw,48px) 110px; }
+    .step { display: none; animation: enter .25s ease; }
+    .step.active { display: block; }
+    @keyframes enter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+    .activity-card { border: 1px solid rgba(220,226,234,.85); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); overflow: hidden; }
+    .activity-head { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start; padding: 28px 30px 23px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 7px; color: var(--blue); font-size: .82rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    .activity-head h2 { margin: 0; color: var(--red); font-size: clamp(1.45rem,2.5vw,2rem); line-height: 1.18; }
+    .activity-head p { margin: 8px 0 0; color: var(--muted); }
+    .duration { border: 1px solid #bed0ee; border-radius: 10px; background: var(--blue-soft); color: var(--blue-dark); padding: 9px 12px; font-size: .88rem; font-weight: 800; white-space: nowrap; }
+    .card-body { padding: 28px 30px 32px; }
+    .instruction { margin: 0 0 22px; border-left: 5px solid var(--red); border-radius: 8px; background: var(--red-soft); padding: 15px 17px; }
+    .objective { margin: 0 0 22px; border-left: 5px solid var(--blue); border-radius: 8px; background: var(--blue-soft); padding: 15px 17px; }
+    .subsection { margin-top: 29px; padding-top: 25px; border-top: 1px solid var(--line); }
+    .subsection:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .subsection h3 { margin: 0 0 8px; color: var(--blue-dark); font-size: 1.2rem; }
+    .subsection h4 { margin: 20px 0 8px; color: var(--ink); font-size: 1rem; }
+    .question { margin: 18px 0; }
+    .question > label, .question > .question-label { display: block; margin-bottom: 7px; color: var(--ink); font-weight: 700; }
+    .required-mark { color: var(--red); }
+    .field-help { margin: 5px 0 0; color: var(--muted); font-size: .84rem; }
+    input[type="text"], input[type="email"], input[type="date"], input[type="number"], textarea, select { width: 100%; border: 1px solid #c9d1dc; border-radius: 9px; background: var(--white); color: var(--ink); padding: 11px 12px; }
+    textarea { min-height: 94px; resize: vertical; }
+    input:hover, textarea:hover, select:hover { border-color: #9ca9bb; }
+    .field-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+    .choice-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .choice { display: inline-flex; align-items: center; gap: 8px; min-height: 43px; border: 1px solid #cdd5e0; border-radius: 9px; background: var(--white); padding: 8px 12px; }
+    .choice:has(input:checked) { color: var(--blue-dark); border-color: var(--blue); background: var(--blue-soft); font-weight: 700; }
+    .choice input { width: 17px; height: 17px; accent-color: var(--blue); }
+    .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 11px; }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    th { background: var(--blue); color: var(--white); padding: 11px 10px; text-align: left; font-size: .89rem; }
+    td { border-top: 1px solid var(--line); padding: 10px; vertical-align: top; }
+    tbody tr:nth-child(even) { background: #f8faff; }
+    td input[type="text"], td select { min-width: 120px; }
+    .compact-table td, .compact-table th { padding: 8px; }
+    .task-cell { min-width: 355px; }
+    .dataset-table td { white-space: nowrap; font-size: .89rem; }
+    .dataset-table .problem { color: var(--red-dark); font-weight: 800; background: #fff1f3; }
+    .pipeline { display: grid; grid-template-columns: repeat(7,1fr); gap: 7px; margin: 19px 0; }
+    .pipeline span { position: relative; display: grid; place-items: center; min-height: 58px; border-radius: 8px; background: var(--blue); color: var(--white); padding: 8px 5px; text-align: center; font-size: .77rem; font-weight: 800; }
+    .pipeline span:not(:last-child)::after { content: "›"; position: absolute; z-index: 2; right: -8px; color: var(--red); font-size: 1.3rem; }
+    .journey { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin: 23px 0; }
+    .journey span { min-height: 74px; display: grid; place-items: center; border-radius: 9px; background: linear-gradient(145deg,var(--blue),#3476d7); color: var(--white); padding: 12px 9px; text-align: center; font-size: .88rem; font-weight: 800; }
+    .summary-table { margin-top: 20px; }
+    .orange-task { margin: 13px 0; border: 1px solid #c7d7ef; border-radius: 11px; background: #f7faff; padding: 15px; }
+    .orange-task p { margin: 0 0 9px; font-weight: 700; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { border-radius: 99px; background: #dfeafb; color: var(--blue-dark); padding: 5px 9px; font-size: .78rem; font-weight: 700; }
+    .checklist { display: grid; gap: 9px; }
+    .check-item { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; }
+    .check-item:has(input:checked) { border-color: #89c7ae; background: #f1fbf7; }
+    .check-item input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--success); }
+    .upload-box { border: 2px dashed #aab8ca; border-radius: 12px; background: #f9fbfd; padding: 18px; text-align: center; }
+    .upload-box input { max-width: 100%; }
+    .image-preview { display: none; margin-top: 14px; }
+    .image-preview.visible { display: block; }
+    .image-preview img { display: block; max-width: 100%; max-height: 360px; margin: 0 auto; border: 1px solid var(--line); border-radius: 9px; }
+    .remove-image { margin-top: 8px; border: 0; background: transparent; color: var(--red); text-decoration: underline; }
+    .step-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 25px; }
+    .btn { min-height: 46px; border: 1px solid transparent; border-radius: 10px; padding: 10px 17px; font-weight: 800; text-decoration: none; }
+    .btn-primary { color: var(--white); background: var(--red); }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-secondary { color: var(--blue-dark); border-color: #aebed5; background: var(--white); }
+    .btn-blue { color: var(--white); background: var(--blue); }
+    .btn-large { min-height: 56px; padding: 13px 22px; font-size: 1.05rem; }
+    .completion-box { display: grid; grid-template-columns: 105px 1fr; align-items: center; gap: 22px; margin-bottom: 25px; border: 1px solid #bfd0ea; border-radius: 13px; background: var(--blue-soft); padding: 20px; }
+    .completion-ring { width: 92px; height: 92px; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(var(--red) var(--progress,0%),#dce5f1 0); position: relative; }
+    .completion-ring::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--white); }
+    .completion-ring strong { position: relative; color: var(--red); font-size: 1.2rem; }
+    .email-flow { margin-top: 22px; border: 1px solid #f0c5cc; border-radius: 13px; background: #fff8f9; padding: 21px; }
+    .email-flow ol { margin: 12px 0 18px; padding-left: 22px; }
+    .button-stack { display: flex; flex-wrap: wrap; gap: 11px; }
+    .alert { display: none; margin-top: 14px; border-radius: 9px; padding: 11px 13px; }
+    .alert.show { display: block; }
+    .alert.info { background: var(--blue-soft); color: var(--blue-dark); }
+    .alert.success { background: #eefaf5; color: #0f6948; }
+    .footer-note { margin-top: 28px; color: var(--muted); text-align: center; font-size: .84rem; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 900px) {
+      .header { grid-template-columns: 1fr auto; }
+      .program-mark { display: none; }
+      .header-title { text-align: left; }
+      .workspace { display: block; }
+      .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 18px; }
+      .nav-list { grid-template-columns: repeat(6,minmax(150px,1fr)); overflow-x: auto; padding-bottom: 6px; }
+      .nav-btn { min-width: 150px; }
+      .privacy-note, .clear-btn { display: none; }
+      .journey { grid-template-columns: repeat(2,1fr); }
+      .pipeline { grid-template-columns: repeat(4,1fr); }
+    }
+    @media (max-width: 640px) {
+      .header { min-height: 92px; gap: 10px; padding: 14px 16px; }
+      .header-title p { font-size: .84rem; }
+      .save-status { min-width: auto; font-size: 0; }
+      .save-status::before { margin: 0; width: 11px; height: 11px; }
+      main { padding: 18px 12px 80px; }
+      .activity-head { grid-template-columns: 1fr; padding: 22px 20px 18px; }
+      .duration { justify-self: start; }
+      .card-body { padding: 22px 18px 26px; }
+      .field-grid { grid-template-columns: 1fr; }
+      .journey, .pipeline { grid-template-columns: 1fr; }
+      .pipeline span:not(:last-child)::after { content: "⌄"; right: auto; bottom: -12px; }
+      .completion-box { grid-template-columns: 1fr; text-align: center; }
+      .completion-ring { margin: 0 auto; }
+      .step-actions { flex-direction: column-reverse; }
+      .step-actions .btn, .button-stack .btn { width: 100%; }
+      .button-stack { display: grid; }
+    }
+    @media print {
+      .brand-strip, .header, .sidebar, .step-actions, .button-stack, .clear-btn, .upload-box input, .remove-image { display: none !important; }
+      body { background: #fff; font-size: 11pt; }
+      .workspace { display: block; }
+      main { width: 100%; padding: 0; }
+      body.printing .step { display: block !important; page-break-after: always; }
+      .activity-card { box-shadow: none; border: 0; }
+      .activity-head, .card-body { padding: 18px; }
+      textarea, input, select { border: 1px solid #bbb !important; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; font-size: 8pt; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brand-strip"></div>
+  <header class="header">
+    <div class="program-mark"><span class="mark-box">AI</span><span>AI4ALL</span></div>
+    <div class="header-title"><h1>AI for Government Services</h1><p>Module 3: Data-Driven Government Decision Support with AI</p></div>
+    <div class="save-status" id="saveStatus" aria-live="polite">Saved locally</div>
+  </header>
+  <form id="workshopForm">
+    <div class="workspace">
+      <aside class="sidebar" aria-label="Workshop activities">
+        <p class="side-label">Your handout</p>
+        <div class="progress-line"><strong>Workshop progress</strong><span id="progressText">0%</span></div>
+        <div class="progress-track" role="progressbar" aria-label="Handout completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar" id="progressBar"></div></div>
+        <p class="progress-hint" id="progressHint">Complete the required fields at your own pace.</p>
+        <nav class="nav-list">
+          <button type="button" class="nav-btn active" data-step="0"><span class="nav-number">S</span><span class="nav-label">Start &amp; Participant Details</span><span class="nav-check">✓</span></button>
+          <button type="button" class="nav-btn" data-step="1"><span class="nav-number">1</span><span class="nav-label">AI Learning Type</span><span class="nav-check">✓</span></button>
+          <button type="button" class="nav-btn" data-step="2"><span class="nav-number">2</span><span class="nav-label">Data Preparation</span><span class="nav-check">✓</span></button>
+          <button type="button" class="nav-btn" data-step="3"><span class="nav-number">3</span><span class="nav-label">Predict Outcomes</span><span class="nav-check">✓</span></button>
+          <button type="button" class="nav-btn" data-step="4"><span class="nav-number">4</span><span class="nav-label">Discover Patterns</span><span class="nav-check">✓</span></button>
+          <button type="button" class="nav-btn" data-step="5"><span class="nav-number">F</span><span class="nav-label">Reflection &amp; Submit</span><span class="nav-check">✓</span></button>
+        </nav>
+        <div class="privacy-note"><strong>Private by design:</strong> answers and uploaded images stay in this browser. Nothing is sent until you choose to email your PDF.</div>
+        <button type="button" class="clear-btn" id="clearWork">Clear all saved work</button>
+      </aside>
+      <main>
+        <section class="step active" data-step-panel="0">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">AI4ALL · Stage 2</p><h2>Workshop Learning Journey</h2><p>A two-hour, fully hands-on module for government decision support.</p></div><span class="duration">2 hours</span></header>
+            <div class="card-body">
+              <div class="objective"><strong>Theme:</strong> Understanding How Data Science and AI Support Better Government Decisions.</div>
+              <div class="instruction"><strong>Main learning goal:</strong> By the end of this module, you should understand what data-driven decision making means; how AI can discover useful patterns and predict future outcomes; the difference between discovering patterns and making predictions; how Orange provides a visual, no-code way to perform AI analysis; and how decision makers can use AI results responsibly.</div>
+              <div class="journey" aria-label="Workshop learning journey"><span>Understand the AI Problem</span><span>Prepare Data for AI</span><span>Predict Future Outcomes</span><span>Discover Hidden Patterns</span><span>Support Better Decisions</span></div>
+              <div class="table-wrap summary-table"><table><thead><tr><th>Activity</th><th>Main question</th><th>Output</th></tr></thead><tbody>
+                <tr><td>AI Learning Type</td><td>Does AI know the expected outcome, or is it discovering unknown patterns?</td><td>Classify organizational scenarios as supervised or unsupervised learning.</td></tr>
+                <tr><td>Data Preparation</td><td>Is the data ready and reliable enough for AI analysis?</td><td>A cleaned and prepared dataset.</td></tr>
+                <tr><td>Predict Future Outcomes</td><td>Can historical data help predict what is likely to happen next?</td><td>An attrition prediction model and responsible interpretation.</td></tr>
+                <tr><td>Discover Hidden Patterns</td><td>What groups can AI discover without knowing the answer in advance?</td><td>Service-performance clusters and possible KPI improvements.</td></tr>
+              </tbody></table></div>
+              <div class="subsection">
+                <h3>Participant Details</h3><p>Enter your details as you want them to appear in the completed PDF.</p>
+                <div class="field-grid">
+                  <div class="question"><label for="participantName">Full name <span class="required-mark">*</span></label><input id="participantName" type="text" autocomplete="name" data-required data-step-required="0"></div>
+                  <div class="question"><label for="participantEmail">Email address <span class="required-mark">*</span></label><input id="participantEmail" type="email" autocomplete="email" data-required data-step-required="0"></div>
+                  <div class="question"><label for="participantDepartment">Department / organization <span class="required-mark">*</span></label><input id="participantDepartment" type="text" data-required data-step-required="0"></div>
+                  <div class="question"><label for="workshopDate">Workshop date <span class="required-mark">*</span></label><input id="workshopDate" type="date" data-required data-step-required="0"></div>
+                </div>
+              </div>
+              <div class="step-actions"><span></span><button type="button" class="btn btn-primary" data-next="1">Begin Activity 1 →</button></div>
+            </div>
+          </article><p class="footer-note">Program Coordinator: Dr. Rawhi Alrae · rawhi@uaeu.ac.ae</p>
+        </section>
+        <section class="step" data-step-panel="1">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">Activity 1</p><h2>AI Learning Type</h2><p>Classify practical examples and explain the clues behind your choices.</p></div><span class="duration">10–15 minutes</span></header>
+            <div class="card-body">
+              <div class="objective"><strong>Objective:</strong> Understand the difference between Supervised Learning and Unsupervised Learning.</div>
+              <div class="instruction"><strong>Background:</strong> Supervised Learning uses historical examples with known answers to predict future outcomes. Unsupervised Learning does not know the correct answers; it discovers hidden patterns, relationships, or natural groups.</div>
+              <div class="subsection"><h3>Step 1: Classification Challenge</h3><p>For each AI task, choose <strong>Supervised Learning</strong> or <strong>Unsupervised Learning</strong>. Do not worry if you are unsure—the discussion afterwards is the most important part.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>#</th><th>AI Task</th><th>Classification</th></tr></thead><tbody id="classificationRows"></tbody></table></div></div>
+              <div class="subsection"><h3>Step 2: Group Discussion</h3>
+                <div class="question"><label for="a1_disc_why">Why did you choose those answers? <span class="required-mark">*</span></label><textarea id="a1_disc_why" data-required data-step-required="1"></textarea></div>
+                <div class="question"><label for="a1_disc_difficult">Which examples were difficult? <span class="required-mark">*</span></label><textarea id="a1_disc_difficult" data-required data-step-required="1"></textarea></div>
+                <div class="question"><label for="a1_disc_clues">What clues helped you decide? <span class="required-mark">*</span></label><textarea id="a1_disc_clues" data-required data-step-required="1"></textarea></div>
+              </div>
+              <div class="step-actions"><button type="button" class="btn btn-secondary" data-back="0">← Start</button><button type="button" class="btn btn-primary" data-next="2">Continue to Activity 2 →</button></div>
+            </div>
+          </article>
+        </section>
+        <section class="step" data-step-panel="2">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">Activity 2</p><h2>Data Preparation Process</h2><p>Inspect, clean, prepare, and validate government service-request data.</p></div><span class="duration">30 minutes</span></header>
+            <div class="card-body">
+              <div class="objective"><strong>Objective:</strong> Identify and resolve common data-quality problems before using data for AI and data analysis.</div>
+              <div class="instruction"><strong>Preparation guidance:</strong> Check data quality for missing, duplicate, invalid, inconsistent, and unusual values; decide how to handle missing data; clean and standardize formats and categories; investigate outliers before removing them; select only relevant features; then transform and validate the final dataset.</div>
+              <div class="pipeline" aria-label="Data preparation process"><span>Inspect</span><span>Clean</span><span>Handle Missing Data</span><span>Select Features</span><span>Transform</span><span>Validate</span><span>Analyze</span></div>
+              <div class="subsection"><h3>Step 1: Inspect the Dataset</h3><p>A government department collected the following service-request data for future AI analysis. Review the table and identify the problems.</p><div class="table-wrap"><table class="dataset-table"><thead id="datasetHead"></thead><tbody id="datasetRows"></tbody></table></div></div>
+              <div class="subsection"><h3>Step 2: Prepare the Data</h3>
+                <h4>1. Check Data Quality</h4>
+                <div class="field-grid">
+                  <div class="question"><label for="a2_missing">Missing values found <span class="required-mark">*</span></label><textarea id="a2_missing" data-required data-step-required="2" placeholder="List the records and missing attributes."></textarea></div>
+                  <div class="question"><label for="a2_duplicates">Duplicate records found <span class="required-mark">*</span></label><textarea id="a2_duplicates" data-required data-step-required="2"></textarea></div>
+                  <div class="question"><label for="a2_invalid">Invalid values found <span class="required-mark">*</span></label><textarea id="a2_invalid" data-required data-step-required="2"></textarea></div>
+                  <div class="question"><label for="a2_inconsistent">Inconsistent categories found <span class="required-mark">*</span></label><textarea id="a2_inconsistent" data-required data-step-required="2"></textarea></div>
+                  <div class="question"><label for="a2_outliers">Possible outliers found <span class="required-mark">*</span></label><textarea id="a2_outliers" data-required data-step-required="2"></textarea></div>
+                  <div class="question"><label for="a2_problem_count">How many data-quality problems can you find? <span class="required-mark">*</span></label><input id="a2_problem_count" type="number" min="0" data-required data-step-required="2"></div>
+                </div>
+                <h4>2. Handle Missing Data</h4><p>Identify each missing value, choose how it should be handled, and explain why.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Record / missing attribute</th><th>Action</th><th>Reason</th></tr></thead><tbody id="missingDecisionRows"></tbody></table></div>
+                <h4>3. Clean &amp; Standardize</h4><p>Identify values that represent the same information but are written differently. Standardize the categories and address duplicates.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Original value or issue</th><th>Standardized value / action</th><th>Notes</th></tr></thead><tbody id="standardRows"></tbody></table></div>
+                <h4>4. Review Outliers</h4><p>Decide which unusual values are clearly invalid and which could be genuine exceptional cases.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Record / unusual value</th><th>Assessment</th><th>Action and reason</th></tr></thead><tbody id="outlierRows"></tbody></table></div>
+                <h4>5. Select Relevant Features</h4><p>Assume the objective is to analyze patterns affecting service processing time and citizen satisfaction.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Attribute</th><th>Include or exclude?</th><th>Reason</th></tr></thead><tbody id="featureRows"></tbody></table></div>
+                <h4>6. Transform &amp; Validate</h4><p>Confirm each final preparation check.</p>
+                <div class="checklist">
+                  <label class="check-item"><input id="a2_validate_types" type="checkbox" data-required data-step-required="2"><span>Data types have been verified.</span></label>
+                  <label class="check-item"><input id="a2_validate_encode" type="checkbox" data-required data-step-required="2"><span>Categorical and Yes/No attributes have been encoded if required.</span></label>
+                  <label class="check-item"><input id="a2_validate_scale" type="checkbox" data-required data-step-required="2"><span>Numeric attributes have been scaled when appropriate.</span></label>
+                  <label class="check-item"><input id="a2_validate_missing" type="checkbox" data-required data-step-required="2"><span>Missing and invalid values have been addressed.</span></label>
+                  <label class="check-item"><input id="a2_validate_categories" type="checkbox" data-required data-step-required="2"><span>Categories are consistent.</span></label>
+                  <label class="check-item"><input id="a2_validate_duplicates" type="checkbox" data-required data-step-required="2"><span>Duplicate records have been handled.</span></label>
+                </div>
+                <div class="question"><label for="a2_final_notes">Final preparation notes <span class="required-mark">*</span></label><textarea id="a2_final_notes" data-required data-step-required="2" placeholder="Summarize the final decisions or remaining concerns."></textarea></div>
+                <div class="question"><span class="question-label">Optional evidence: prepared data or Orange screenshot</span><div class="upload-box"><input id="a2_image" type="file" accept="image/*" aria-label="Upload Activity 2 evidence"><p class="field-help">Images are resized and saved only in this browser.</p><div class="image-preview" id="a2_image_preview"><img alt="Activity 2 uploaded evidence"><button type="button" class="remove-image" data-remove-image="a2_image">Remove image</button></div></div></div>
+              </div>
+              <div class="step-actions"><button type="button" class="btn btn-secondary" data-back="1">← Activity 1</button><button type="button" class="btn btn-primary" data-next="3">Continue to Activity 3 →</button></div>
+            </div>
+          </article>
+        </section>
+        <section class="step" data-step-panel="3">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">Activity 3</p><h2>Predict Future Outcomes</h2><p>Supervised Learning: build and interpret an employee-attrition prediction model.</p></div><span class="duration">40 minutes</span></header>
+            <div class="card-body">
+              <div class="objective"><strong>Objective:</strong> Understand where AI can assist employees and where human involvement is still necessary.</div>
+              <div class="instruction"><strong>Scenario:</strong> The HR department wants to identify employees at risk of resigning so managers can intervene early. Review the selected attributes before building the model in Orange.</div>
+              <div class="subsection"><h3>Steps 1–2: Understand the Data and Identify Data Types</h3><p>For every attribute, select the most appropriate data type. Data types may include unique ID, numeric, categorical, boolean, ordinal, textual, descriptive, date, time, media, or documental.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Attribute</th><th>Your selected data type</th></tr></thead><tbody id="a3TypeRows"></tbody></table></div>
+                <h4>Discussion</h4>
+                <div class="question"><label for="a3_target">Which attribute is the target for prediction in this scenario? <span class="required-mark">*</span></label><textarea id="a3_target" data-required data-step-required="3"></textarea></div>
+                <div class="question"><label for="a3_influential">Which attributes seem most influential? <span class="required-mark">*</span></label><textarea id="a3_influential" data-required data-step-required="3"></textarea></div>
+                <div class="question"><label for="a3_unnecessary">Which attributes do you consider unnecessary for prediction? <span class="required-mark">*</span></label><textarea id="a3_unnecessary" data-required data-step-required="3"></textarea></div>
+                <div class="question"><label for="a3_other_target">Could we choose a different target for prediction? Give a scenario. <span class="required-mark">*</span></label><textarea id="a3_other_target" data-required data-step-required="3"></textarea></div>
+              </div>
+              <div class="subsection"><h3>Step 3: Build the Prediction Model Using AI</h3><p>Follow the instructor in building the supervised learning system using Orange, then discuss:</p>
+                <div class="question"><span class="question-label">Was the prediction correct? <span class="required-mark">*</span></span><div class="choice-row"><label class="choice"><input type="radio" name="a3_prediction_correct" value="Yes" data-required data-step-required="3">Yes</label><label class="choice"><input type="radio" name="a3_prediction_correct" value="No" data-required data-step-required="3">No</label><label class="choice"><input type="radio" name="a3_prediction_correct" value="The result was unclear" data-required data-step-required="3">The result was unclear</label></div></div>
+                <div class="question"><span class="question-label">Should AI make the final decision? <span class="required-mark">*</span></span><div class="choice-row"><label class="choice"><input type="radio" name="a3_final_decision" value="Yes" data-required data-step-required="3">Yes</label><label class="choice"><input type="radio" name="a3_final_decision" value="No" data-required data-step-required="3">No</label><label class="choice"><input type="radio" name="a3_final_decision" value="Only with defined controls" data-required data-step-required="3">Only with defined controls</label></div></div>
+                <div class="question"><label for="a3_human_review">When should a human review the application? <span class="required-mark">*</span></label><textarea id="a3_human_review" data-required data-step-required="3"></textarea></div>
+                <div class="question"><span class="question-label">Optional evidence: Orange workflow or prediction result</span><div class="upload-box"><input id="a3_image" type="file" accept="image/*" aria-label="Upload Activity 3 evidence"><p class="field-help">Upload a screenshot if requested by the instructor.</p><div class="image-preview" id="a3_image_preview"><img alt="Activity 3 uploaded evidence"><button type="button" class="remove-image" data-remove-image="a3_image">Remove image</button></div></div></div>
+              </div>
+              <div class="step-actions"><button type="button" class="btn btn-secondary" data-back="2">← Activity 2</button><button type="button" class="btn btn-primary" data-next="4">Continue to Activity 4 →</button></div>
+            </div>
+          </article>
+        </section>
+        <section class="step" data-step-panel="4">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">Activity 4</p><h2>Discover Hidden Patterns</h2><p>Unsupervised Learning: explore natural service-performance groups.</p></div><span class="duration">40 minutes</span></header>
+            <div class="card-body">
+              <div class="objective"><strong>Objective:</strong> Understand how AI can discover hidden patterns that may not be obvious to humans.</div>
+              <div class="instruction"><strong>Scenario:</strong> The Ministry wants to understand service performance before developing or reviewing KPIs. The AI does not know the groups in advance; it analyzes service data to discover patterns based on efficiency, quality, employee satisfaction, digital adoption, and resource utilization.</div>
+              <div class="subsection"><h3>Steps 1–2: Understand the Data and Identify Data Types</h3><p>Select the most appropriate data type for each service attribute. The middle column shows the values or scale used in the dataset.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Attribute</th><th>Values / scale in the dataset</th><th>Your selected data type</th></tr></thead><tbody id="a4TypeRows"></tbody></table></div>
+                <h4>Discussion</h4>
+                <div class="question"><label for="a4_candidate">Why is this dataset a good candidate for unsupervised learning? <span class="required-mark">*</span></label><textarea id="a4_candidate" data-required data-step-required="4"></textarea></div>
+                <div class="question"><label for="a4_unnecessary">Which attributes do you consider unnecessary for clustering? <span class="required-mark">*</span></label><textarea id="a4_unnecessary" data-required data-step-required="4"></textarea></div>
+                <div class="question"><label for="a4_related">Which attributes seem to be highly related? <span class="required-mark">*</span></label><textarea id="a4_related" data-required data-step-required="4"></textarea></div>
+                <div class="question"><label for="a4_dimensions">Which attributes represent service efficiency, service quality, and employee experience? <span class="required-mark">*</span></label><textarea id="a4_dimensions" data-required data-step-required="4"></textarea></div>
+              </div>
+              <div class="subsection"><h3>Step 3: Discover Patterns Using AI</h3><p>Build the unsupervised learning workflow in Orange. Use the suggested visualizations, then record what you observe.</p>
+                <div class="orange-task"><p>1. Find services with low employee satisfaction and high complaint rates. What factors might explain this pattern?</p><div class="chips"><span class="chip">Scatter Plot</span><span class="chip">X: Employee_Satisfaction</span><span class="chip">Y: Complaint_Rate</span><span class="chip">Color: Cluster / Processing Time / Digital Usage / Workload / Cost</span></div><div class="question"><label for="a4_pattern_1">Your observation <span class="required-mark">*</span></label><textarea id="a4_pattern_1" data-required data-step-required="4"></textarea></div></div>
+                <div class="orange-task"><p>2. Find services with high employee workload and high cost per request.</p><div class="chips"><span class="chip">Scatter Plot</span><span class="chip">X: Employee_Workload</span><span class="chip">Y: Cost_Per_Request</span><span class="chip">Color: Cluster / Avg Processing Time</span></div><div class="question"><label for="a4_pattern_2">Your observation <span class="required-mark">*</span></label><textarea id="a4_pattern_2" data-required data-step-required="4"></textarea></div></div>
+                <div class="orange-task"><p>3. Do automated services appear in similar groups? How does their performance compare with non-automated services?</p><div class="chips"><span class="chip">Scatter Plot</span><span class="chip">X: Avg_Processing_Time</span><span class="chip">Y: Complaint_Rate</span><span class="chip">Color: Automated_Process</span><span class="chip">Box Plot: Processing Time / Complaint Rate</span></div><div class="question"><label for="a4_pattern_3">Your observation <span class="required-mark">*</span></label><textarea id="a4_pattern_3" data-required data-step-required="4"></textarea></div></div>
+                <div class="orange-task"><p>4. Do services with an existing KPI show different performance characteristics?</p><div class="chips"><span class="chip">Box Plot</span><span class="chip">Subgroups: KPI_Currently_Defined</span><span class="chip">Satisfaction / Complaints / Digital Usage / Cost / Workload</span></div><div class="question"><label for="a4_pattern_4">Your observation <span class="required-mark">*</span></label><textarea id="a4_pattern_4" data-required data-step-required="4"></textarea></div></div>
+                <h4>Analysis Summary</h4><div id="a4SummaryQuestions"></div>
+                <div class="question"><span class="question-label">Optional evidence: Orange clustering workflow or results</span><div class="upload-box"><input id="a4_image" type="file" accept="image/*" aria-label="Upload Activity 4 evidence"><p class="field-help">Upload a screenshot if requested by the instructor.</p><div class="image-preview" id="a4_image_preview"><img alt="Activity 4 uploaded evidence"><button type="button" class="remove-image" data-remove-image="a4_image">Remove image</button></div></div></div>
+              </div>
+              <div class="step-actions"><button type="button" class="btn btn-secondary" data-back="3">← Activity 3</button><button type="button" class="btn btn-primary" data-next="5">Continue to Final Reflection →</button></div>
+            </div>
+          </article>
+        </section>
+        <section class="step" data-step-panel="5">
+          <article class="activity-card">
+            <header class="activity-head"><div><p class="eyebrow">Complete your handout</p><h2>Final Reflection &amp; Submission</h2><p>Connect the workshop activities to your own department, then create and email your PDF.</p></div><span class="duration">Final step</span></header>
+            <div class="card-body">
+              <div class="completion-box"><div class="completion-ring" id="completionRing"><strong id="finalPercent">0%</strong></div><div><h3 id="completionTitle">Your handout is in progress</h3><p id="completionMessage">Complete the remaining required fields before submission. You may still export a draft at any time.</p><button type="button" class="btn btn-secondary" id="reviewMissing">Review first unanswered field</button></div></div>
+              <div class="subsection"><h3>Final Reflection</h3><div id="reflectionQuestions"></div></div>
+              <div class="email-flow"><h3>Download and email your completed handout</h3><ol><li>The page creates and downloads your PDF.</li><li>Your selected email application opens with a prepared message.</li><li>Attach the downloaded PDF, review the message, and select <strong>Send</strong>.</li></ol>
+                <div class="field-grid"><div class="question"><label for="recipientEmail">Send to <span class="required-mark">*</span></label><input id="recipientEmail" type="email" value="rawhi@uaeu.ac.ae" data-required data-step-required="5"></div><div class="question"><label for="emailApp">Open email with</label><select id="emailApp"><option value="default">Default email application</option><option value="outlook">Outlook on the web</option></select></div></div>
+                <div class="button-stack"><button type="button" class="btn btn-primary btn-large" id="downloadEmail">Download PDF &amp; Open Email</button><button type="button" class="btn btn-blue" id="downloadOnly">Download PDF Only</button></div>
+                <div class="alert info" id="exportAlert" role="status" aria-live="polite"></div>
+              </div>
+              <div class="step-actions"><button type="button" class="btn btn-secondary" data-back="4">← Activity 4</button><span></span></div>
+            </div>
+          </article><p class="footer-note">AI4ALL – AI for Government Services · Program Coordinator: Dr. Rawhi Alrae</p>
+        </section>
+      </main>
+    </div>
+  </form>
+  <script>
+  (() => {
+    "use strict";
+    const STORAGE_KEY="ai4all_module3_handout_v1", IMAGE_DB="ai4all_module3_images_v1";
+    const form=document.getElementById("workshopForm"), steps=[...document.querySelectorAll(".step")], navButtons=[...document.querySelectorAll(".nav-btn")];
+    let currentStep=0, saveTimer, currentPercent=0;
+    const classificationTasks=[
+      "AI groups employees into different service usage profiles based on their behavior.",
+      "AI predicts whether a scholarship application will be approved.",
+      "AI identifies groups of employees with similar work patterns.",
+      "AI predicts whether an employee is likely to resign within the next year.",
+      "AI discovers different types of employee complaints without knowing the categories beforehand.",
+      "AI predicts whether a customer will be satisfied with a service.",
+      "AI groups hospitals based on patient demand and service usage.",
+      "AI predicts whether a service request will require escalation.",
+      "AI discovers different spending patterns among government departments.",
+      "AI predicts whether a permit application will be completed on time."
+    ];
+    const datasetHeaders=["Request_ID","Age","Department","Service_Channel","Processing_Time","Satisfaction","Escalated"];
+    const dataset=[
+      ["R001","35","Licensing","Mobile App","12","5","No"],["R002","42","Finance","Counter","25","4","Yes"],["R003","—","IT","Website","18","4","No"],
+      ["R004","29","HR","mobile app","15","7","No"],["R005","41","Finance","Counter","—","3","Yes"],["R006","250","Health","Phone","22","4","No"],
+      ["R007","38","licensing","Mobile App","-10","5","N"],["R008","45","IT","Website","150","—","No"],["R008","45","IT","Website","150","—","No"],["R010","33","HR","App","16","2","Y"]
+    ];
+    const knownProblemValues=new Set(["—","mobile app","7","250","licensing","-10","N","150","App","Y"]);
+    const featureAttributes=["Request_ID","Age","Department","Service_Channel","Processing_Time","Satisfaction","Escalated"];
+    const typeOptions=["Unique ID","Numeric","Categorical","Boolean (Yes / No)","Ordinal / Rating","Textual","Descriptive","Date","Time","Media","Documental"];
+    const a3Attributes=["Employee_ID","Employee_Name","Age","Department","Job_Level","Education_Level","Years_at_Organization","Overtime","Job_Satisfaction","Monthly_Salary_AED","Training_Hours_Last_Year","Promotion_Last_3_Years","Performance_Score","Absence_Days_Last_Year","Commute_Minutes","Remote_Work_Days_Per_Week","Manager_Support_Score","Work_Life_Balance_Score","Attrition"];
+    const a4Attributes=[
+      ["Service_ID","Unique service identifier"],["Department","HR / Finance / Licensing / IT / Health"],["Service_Type","Application / Renewal / Inquiry / Payment / Complaint"],
+      ["Service_Channel","Website / Mobile App / Counter / Phone"],["Service_Priority","Low / Medium / High / Critical"],["Target_Audience","Individuals / Businesses / Employees / Visitors"],
+      ["Requests_Received","Number of requests"],["Avg_Processing_Time","Processing time"],["Employee_Satisfaction","1–5"],["Complaint_Rate","Percentage"],
+      ["Digital_Usage_Rate","Percentage"],["Cost_Per_Request","Cost"],["Employee_Workload","Number of assigned requests"],["Requires_Documents","Yes / No"],
+      ["Requires_Approval","Yes / No"],["KPI_Currently_Defined","Yes / No"],["Automated_Process","Yes / No"]
+    ];
+    const a4Summary=[
+      "Can you identify a group of high-performing services? What characteristics do they share?",
+      "Can you identify a group of services with long processing times and low on-time completion rates? What other characteristics do they share?",
+      "Can you identify a group of services with low citizen satisfaction and high complaint rates? What factors might explain this pattern?",
+      "Can you identify a group of services with high employee workload and high cost per request?",
+      "Do automated services appear in similar groups? How does their performance compare with non-automated services?",
+      "Do services with a defined SLA or existing KPI show different performance characteristics?",
+      "Based on the discovered patterns, which performance areas may require new or revised KPIs?"
+    ];
+    const reflections=[
+      "What is the main difference between supervised and unsupervised learning?",
+      "Which type of learning is more suitable when historical outcomes are available?",
+      "Which type of learning is more suitable when we want to discover hidden patterns?",
+      "What surprised you most about today's activities?",
+      "How could your department benefit from predictive AI?",
+      "How could your department benefit from pattern discovery?",
+      "What decisions should always remain under human responsibility?"
+    ];
+    const safeId=v=>v.replace(/[^a-zA-Z0-9_]/g,"_");
+    const optionMarkup=()=>'<option value="">Select a data type</option>'+typeOptions.map(v=>'<option value="'+v+'">'+v+"</option>").join("");
+    function renderDynamicContent(){
+      document.getElementById("classificationRows").innerHTML=classificationTasks.map((task,i)=>{const n=i+1;return '<tr><td><strong>'+n+'</strong></td><td class="task-cell">'+task+'</td><td><div class="choice-row"><label class="choice"><input type="radio" name="a1_class_'+n+'" value="Supervised Learning" data-required data-step-required="1">Supervised</label><label class="choice"><input type="radio" name="a1_class_'+n+'" value="Unsupervised Learning" data-required data-step-required="1">Unsupervised</label></div></td></tr>';}).join("");
+      document.getElementById("datasetHead").innerHTML="<tr>"+datasetHeaders.map(h=>"<th>"+h+"</th>").join("")+"</tr>";
+      document.getElementById("datasetRows").innerHTML=dataset.map(row=>"<tr>"+row.map(v=>'<td class="'+(knownProblemValues.has(v)?"problem":"")+'">'+v+"</td>").join("")+"</tr>").join("");
+      document.getElementById("missingDecisionRows").innerHTML=Array.from({length:4},(_,i)=>'<tr><td><input type="text" id="a2_missing_record_'+(i+1)+'" placeholder="e.g., record and attribute"'+(i<3?' data-required data-step-required="2"':"")+'></td><td><select id="a2_missing_action_'+(i+1)+'"'+(i<3?' data-required data-step-required="2"':"")+'><option value="">Choose action</option><option>Replace</option><option>Retrieve</option><option>Keep as Unknown</option><option>Remove</option></select></td><td><input type="text" id="a2_missing_reason_'+(i+1)+'" placeholder="Explain your decision"'+(i<3?' data-required data-step-required="2"':"")+'></td></tr>').join("");
+      document.getElementById("standardRows").innerHTML=Array.from({length:5},(_,i)=>'<tr><td><input type="text" id="a2_standard_original_'+(i+1)+'" placeholder="Original value / issue"'+(i<3?' data-required data-step-required="2"':"")+'></td><td><input type="text" id="a2_standard_action_'+(i+1)+'" placeholder="Standard value / action"'+(i<3?' data-required data-step-required="2"':"")+'></td><td><input type="text" id="a2_standard_notes_'+(i+1)+'" placeholder="Notes"></td></tr>').join("");
+      document.getElementById("outlierRows").innerHTML=Array.from({length:4},(_,i)=>'<tr><td><input type="text" id="a2_outlier_value_'+(i+1)+'" placeholder="Record / value"'+(i<3?' data-required data-step-required="2"':"")+'></td><td><select id="a2_outlier_assessment_'+(i+1)+'"'+(i<3?' data-required data-step-required="2"':"")+'><option value="">Choose assessment</option><option>Clearly invalid</option><option>Possible genuine exception</option><option>Needs investigation</option></select></td><td><input type="text" id="a2_outlier_action_'+(i+1)+'" placeholder="Action and reason"'+(i<3?' data-required data-step-required="2"':"")+'></td></tr>').join("");
+      document.getElementById("featureRows").innerHTML=featureAttributes.map(attr=>{const id=safeId(attr);return '<tr><td><strong>'+attr+'</strong></td><td><select id="a2_feature_'+id+'" data-required data-step-required="2"><option value="">Choose</option><option>Include</option><option>Exclude</option><option>Unsure / Discuss</option></select></td><td><input type="text" id="a2_feature_reason_'+id+'" placeholder="Why?"></td></tr>';}).join("");
+      document.getElementById("a3TypeRows").innerHTML=a3Attributes.map(attr=>'<tr><td><strong>'+attr+'</strong></td><td><select id="a3_type_'+safeId(attr)+'" data-required data-step-required="3">'+optionMarkup()+"</select></td></tr>").join("");
+      document.getElementById("a4TypeRows").innerHTML=a4Attributes.map(([attr,values])=>'<tr><td><strong>'+attr+'</strong></td><td>'+values+'</td><td><select id="a4_type_'+safeId(attr)+'" data-required data-step-required="4">'+optionMarkup()+"</select></td></tr>").join("");
+      document.getElementById("a4SummaryQuestions").innerHTML=a4Summary.map((q,i)=>'<div class="question"><label for="a4_summary_'+(i+1)+'">'+(i+1)+". "+q+' <span class="required-mark">*</span></label><textarea id="a4_summary_'+(i+1)+'" data-required data-step-required="4"></textarea></div>').join("");
+      document.getElementById("reflectionQuestions").innerHTML=reflections.map((q,i)=>'<div class="question"><label for="reflection_'+(i+1)+'">'+(i+1)+". "+q+' <span class="required-mark">*</span></label><textarea id="reflection_'+(i+1)+'" data-required data-step-required="5"></textarea></div>').join("");
+    }
+    function captureState(){const data={};form.querySelectorAll("input,textarea,select").forEach(el=>{if(el.type==="file")return;if(el.type==="radio"){if(el.checked)data[el.name]=el.value;}else if(el.type==="checkbox")data[el.id]=el.checked;else data[el.id]=el.value;});data.__currentStep=currentStep;return data;}
+    function restoreState(){let state={};try{state=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");}catch(_){ }form.querySelectorAll("input,textarea,select").forEach(el=>{if(el.type==="file")return;if(el.type==="radio")el.checked=state[el.name]===el.value;else if(el.type==="checkbox")el.checked=Boolean(state[el.id]);else if(Object.prototype.hasOwnProperty.call(state,el.id))el.value=state[el.id];});if(!document.getElementById("workshopDate").value)document.getElementById("workshopDate").value=new Date().toISOString().slice(0,10);const restored=Number(state.__currentStep);if(Number.isInteger(restored)&&restored>=0&&restored<steps.length)currentStep=restored;}
+    function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(captureState()));document.getElementById("saveStatus").textContent="Saved locally";}catch(_){document.getElementById("saveStatus").textContent="Save unavailable";}}
+    function scheduleSave(){document.getElementById("saveStatus").textContent="Saving…";clearTimeout(saveTimer);saveTimer=setTimeout(saveState,250);updateProgress();}
+    function isFilled(el){if(el.type==="radio")return Boolean(form.querySelector('input[name="'+CSS.escape(el.name)+'"]:checked'));if(el.type==="checkbox")return el.checked;return String(el.value||"").trim()!=="";}
+    function requiredStats(selector="[data-required]"){const fields=[...form.querySelectorAll(selector)],seen=new Set();let total=0,filled=0;fields.forEach(el=>{if(el.type==="radio"){if(seen.has(el.name))return;seen.add(el.name);}total++;if(isFilled(el))filled++;});return{total,filled,percent:total?Math.round(filled/total*100):100};}
+    function updateProgress(){const s=requiredStats();currentPercent=s.percent;document.getElementById("progressText").textContent=s.percent+"%";document.getElementById("progressBar").style.width=s.percent+"%";document.querySelector(".progress-track").setAttribute("aria-valuenow",String(s.percent));document.getElementById("progressHint").textContent=s.filled+" of "+s.total+" required responses completed.";document.getElementById("finalPercent").textContent=s.percent+"%";document.getElementById("completionRing").style.setProperty("--progress",s.percent+"%");document.getElementById("completionTitle").textContent=s.percent===100?"Your handout is complete":"Your handout is in progress";document.getElementById("completionMessage").textContent=s.percent===100?"All required responses are complete. You are ready to create and email your PDF.":"Complete the remaining required fields before submission. You may still export a draft at any time.";navButtons.forEach((btn,i)=>{const ss=requiredStats('[data-step-required="'+i+'"]');btn.classList.toggle("done",ss.total>0&&ss.filled===ss.total);});}
+    function showStep(index,focusTop=true){if(!Number.isInteger(index)||index<0||index>=steps.length)return;currentStep=index;steps.forEach((s,i)=>s.classList.toggle("active",i===index));navButtons.forEach((b,i)=>{b.classList.toggle("active",i===index);if(i===index)b.setAttribute("aria-current","step");else b.removeAttribute("aria-current");});saveState();updateProgress();if(focusTop){window.scrollTo({top:0,behavior:"smooth"});const h=steps[index].querySelector("h2");if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true});}}}
+    function openImageDb(){return new Promise((resolve,reject)=>{if(!("indexedDB" in window)){reject(new Error("IndexedDB unavailable"));return;}const r=indexedDB.open(IMAGE_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore("images");r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+    async function imageDb(action,key,val){const db=await openImageDb();return new Promise((resolve,reject)=>{const tx=db.transaction("images",action==="get"?"readonly":"readwrite"),store=tx.objectStore("images"),r=action==="put"?store.put(val,key):action==="delete"?store.delete(key):store.get(key);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);tx.oncomplete=()=>db.close();});}
+    function resizeImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(new Error("The image could not be read."));reader.onload=()=>{const image=new Image();image.onerror=()=>reject(new Error("This image format is not supported by the browser."));image.onload=()=>{const max=1600,scale=Math.min(1,max/Math.max(image.width,image.height)),width=Math.max(1,Math.round(image.width*scale)),height=Math.max(1,Math.round(image.height*scale)),canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,width,height);ctx.drawImage(image,0,0,width,height);resolve({dataUrl:canvas.toDataURL("image/jpeg",.84),width,height,name:file.name});};image.src=reader.result;};reader.readAsDataURL(file);});}
+    function showImagePreview(id,record){const wrap=document.getElementById(id+"_preview");if(!wrap)return;const img=wrap.querySelector("img");if(record?.dataUrl){img.src=record.dataUrl;wrap.classList.add("visible");}else{img.removeAttribute("src");wrap.classList.remove("visible");}}
+    async function restoreImages(){for(const id of["a2_image","a3_image","a4_image"]){try{showImagePreview(id,await imageDb("get",id));}catch(_){}}}
+    async function handleImageInput(input){const box=document.getElementById("exportAlert");if(!input.files?.[0])return;try{const record=await resizeImage(input.files[0]);await imageDb("put",input.id,record);showImagePreview(input.id,record);box.className="alert success show";box.textContent="Image saved with this handout.";}catch(error){box.className="alert info show";box.textContent=error.message||"The image could not be saved.";input.value="";}}
+    function value(idOrName){const el=document.getElementById(idOrName);if(el)return el.type==="checkbox"?(el.checked?"Completed":"Not completed"):(el.value||"");return form.querySelector('input[name="'+CSS.escape(idOrName)+'"]:checked')?.value||"";}
+    function pdfSafe(text){return String(text||"No response provided").replace(/[–—]/g,"-").replace(/[’‘]/g,"'").replace(/[“”]/g,'"').replace(/•/g,"-").replace(/[^\x20-\x7E]/g," ");}
+    async function createPdf(){
+      if(!window.jspdf?.jsPDF)return null;
+      const {jsPDF}=window.jspdf,doc=new jsPDF({unit:"pt",format:"a4",compress:true}),pageW=595.28,pageH=841.89,margin=42,usableW=pageW-margin*2;let y=44;
+      doc.setProperties({title:"AI4ALL Module 3 Completed Handout",subject:"Data-Driven Government Decision Support with AI",author:value("participantName")||"AI4ALL Participant",creator:"AI4ALL Interactive Handout"});
+      function pageHeader(){doc.setFillColor(200,16,46);doc.rect(0,0,pageW,9,"F");doc.setTextColor(200,16,46);doc.setFont("helvetica","bold");doc.setFontSize(9);doc.text("AI4ALL - AI for Government Services",margin,27);doc.setTextColor(100,112,132);doc.setFont("helvetica","normal");doc.text(pdfSafe(value("participantName")||"Participant"),pageW-margin,27,{align:"right"});doc.setDrawColor(220,226,234);doc.line(margin,34,pageW-margin,34);y=51;}
+      function newPage(){doc.addPage();pageHeader();}
+      function ensure(space){if(y+space>pageH-48)newPage();}
+      function lines(text,width=usableW){return doc.splitTextToSize(pdfSafe(text),width);}
+      function addSection(title){ensure(43);y+=7;doc.setFillColor(36,94,181);doc.roundedRect(margin,y,usableW,27,5,5,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(pdfSafe(title),margin+10,y+18);y+=38;}
+      function addSubhead(title){ensure(27);doc.setTextColor(200,16,46);doc.setFont("helvetica","bold");doc.setFontSize(11);const ls=lines(title);doc.text(ls,margin,y);y+=ls.length*14+5;}
+      function addAnswer(label,answer){const ll=lines(label),al=lines(answer||"No response provided"),h=ll.length*12+al.length*13+14;ensure(h);doc.setTextColor(23,32,51);doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text(ll,margin,y);y+=ll.length*12+3;doc.setTextColor(65,76,94);doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.text(al,margin,y);y+=al.length*13+12;}
+      function addTable(headers,rows,widths){if(!rows.length){addAnswer("Table response","No response provided");return;}function headerRow(){const h=25;doc.setFillColor(36,94,181);doc.rect(margin,y,usableW,h,"F");let x=margin;doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(8);headers.forEach((header,i)=>{doc.text(lines(header,widths[i]-10),x+5,y+16);x+=widths[i];});y+=h;}ensure(50);headerRow();rows.forEach((row,rowIndex)=>{const cellLines=row.map((cell,i)=>lines(cell||"-",widths[i]-10)),rowH=Math.max(25,Math.max(...cellLines.map(ls=>ls.length))*10+10);if(y+rowH>pageH-48){newPage();headerRow();}if(rowIndex%2){doc.setFillColor(247,250,255);doc.rect(margin,y,usableW,rowH,"F");}let x=margin;doc.setDrawColor(220,226,234);doc.setTextColor(45,55,72);doc.setFont("helvetica","normal");doc.setFontSize(8);cellLines.forEach((ls,i)=>{doc.rect(x,y,widths[i],rowH,"S");doc.text(ls,x+5,y+13);x+=widths[i];});y+=rowH;});y+=12;}
+      async function addEvidence(id,label){let record;try{record=await imageDb("get",id);}catch(_){return;}if(!record?.dataUrl)return;addSubhead(label);const ratio=Math.min(usableW/record.width,320/record.height),w=record.width*ratio,h=record.height*ratio;ensure(h+15);doc.addImage(record.dataUrl,"JPEG",margin,y,w,h,undefined,"FAST");y+=h+15;}
+      doc.setFillColor(200,16,46);doc.rect(0,0,pageW,12,"F");doc.setTextColor(200,16,46);doc.setFont("helvetica","bold");doc.setFontSize(21);doc.text("AI for Government Services",margin,68);doc.setTextColor(23,32,51);doc.setFontSize(16);doc.text("Module 3: Data-Driven Government Decision Support with AI",margin,96);doc.setTextColor(36,94,181);doc.setFontSize(11);doc.text("Completed Interactive Handout",margin,119);doc.setDrawColor(220,226,234);doc.line(margin,136,pageW-margin,136);y=168;
+      addAnswer("Participant name",value("participantName"));addAnswer("Email",value("participantEmail"));addAnswer("Department / organization",value("participantDepartment"));addAnswer("Workshop date",value("workshopDate"));addAnswer("Generated",new Date().toLocaleString());
+      doc.setFillColor(238,245,255);doc.roundedRect(margin,y+6,usableW,77,7,7,"F");doc.setTextColor(23,63,124);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Workshop learning journey",margin+12,y+25);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(lines("Understand the AI Problem > Prepare Data for AI > Predict Future Outcomes > Discover Hidden Patterns > Support Better Decisions",usableW-24),margin+12,y+43);y+=100;
+      addSection("Activity 1: AI Learning Type");addTable(["AI task","Classification"],classificationTasks.map((task,i)=>[task,value("a1_class_"+(i+1))]),[365,146]);addAnswer("Why did you choose those answers?",value("a1_disc_why"));addAnswer("Which examples were difficult?",value("a1_disc_difficult"));addAnswer("What clues helped you decide?",value("a1_disc_clues"));
+      addSection("Activity 2: Data Preparation Process");addSubhead("1. Check Data Quality");
+      [["Missing values found","a2_missing"],["Duplicate records found","a2_duplicates"],["Invalid values found","a2_invalid"],["Inconsistent categories found","a2_inconsistent"],["Possible outliers found","a2_outliers"],["Total number of problems","a2_problem_count"]].forEach(([l,id])=>addAnswer(l,value(id)));
+      addSubhead("2. Handle Missing Data");addTable(["Record / attribute","Action","Reason"],Array.from({length:4},(_,i)=>[value("a2_missing_record_"+(i+1)),value("a2_missing_action_"+(i+1)),value("a2_missing_reason_"+(i+1))]).filter(r=>r.some(Boolean)),[170,115,226]);
+      addSubhead("3. Clean & Standardize");addTable(["Original value / issue","Standardized value / action","Notes"],Array.from({length:5},(_,i)=>[value("a2_standard_original_"+(i+1)),value("a2_standard_action_"+(i+1)),value("a2_standard_notes_"+(i+1))]).filter(r=>r.some(Boolean)),[170,180,161]);
+      addSubhead("4. Review Outliers");addTable(["Record / value","Assessment","Action and reason"],Array.from({length:4},(_,i)=>[value("a2_outlier_value_"+(i+1)),value("a2_outlier_assessment_"+(i+1)),value("a2_outlier_action_"+(i+1))]).filter(r=>r.some(Boolean)),[150,145,216]);
+      addSubhead("5. Select Relevant Features");addTable(["Attribute","Decision","Reason"],featureAttributes.map(attr=>{const id=safeId(attr);return[attr,value("a2_feature_"+id),value("a2_feature_reason_"+id)];}),[155,115,241]);
+      addSubhead("6. Transform & Validate");addTable(["Validation check","Status"],[["Verify data types",value("a2_validate_types")],["Encode categorical and Yes/No attributes",value("a2_validate_encode")],["Scale numeric attributes when appropriate",value("a2_validate_scale")],["Address missing and invalid values",value("a2_validate_missing")],["Keep categories consistent",value("a2_validate_categories")],["Handle duplicate records",value("a2_validate_duplicates")]],[390,121]);addAnswer("Final preparation notes",value("a2_final_notes"));await addEvidence("a2_image","Activity 2 evidence");
+      addSection("Activity 3: Predict Future Outcomes (Supervised Learning)");addSubhead("Data Types");addTable(["Attribute","Selected data type"],a3Attributes.map(attr=>[attr,value("a3_type_"+safeId(attr))]),[280,231]);
+      [["Which attribute is the target?","a3_target"],["Which attributes seem most influential?","a3_influential"],["Which attributes seem unnecessary?","a3_unnecessary"],["Could a different target be selected? Give a scenario.","a3_other_target"],["Was the prediction correct?","a3_prediction_correct"],["Should AI make the final decision?","a3_final_decision"],["When should a human review the application?","a3_human_review"]].forEach(([l,id])=>addAnswer(l,value(id)));await addEvidence("a3_image","Activity 3 evidence");
+      addSection("Activity 4: Discover Hidden Patterns (Unsupervised Learning)");addSubhead("Data Types");addTable(["Attribute","Values / scale","Selected data type"],a4Attributes.map(([attr,sample])=>[attr,sample,value("a4_type_"+safeId(attr))]),[165,190,156]);
+      [["Why is this dataset suitable for unsupervised learning?","a4_candidate"],["Which attributes are unnecessary for clustering?","a4_unnecessary"],["Which attributes seem highly related?","a4_related"],["Which attributes represent efficiency, quality, and employee experience?","a4_dimensions"],["Low employee satisfaction and high complaint rates","a4_pattern_1"],["High workload and high cost per request","a4_pattern_2"],["Automated vs. non-automated services","a4_pattern_3"],["Services with an existing KPI","a4_pattern_4"]].forEach(([l,id])=>addAnswer(l,value(id)));a4Summary.forEach((q,i)=>addAnswer(q,value("a4_summary_"+(i+1))));await addEvidence("a4_image","Activity 4 evidence");
+      addSection("Final Reflection");reflections.forEach((q,i)=>addAnswer(q,value("reflection_"+(i+1))));
+      const count=doc.getNumberOfPages();for(let i=1;i<=count;i++){doc.setPage(i);doc.setDrawColor(220,226,234);doc.line(margin,pageH-34,pageW-margin,pageH-34);doc.setTextColor(100,112,132);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.text("AI4ALL Module 3 - Dr. Rawhi Alrae",margin,pageH-20);doc.text(i+" / "+count,pageW-margin,pageH-20,{align:"right"});}return doc;
+    }
+    function fileName(){const name=(value("participantName")||"Participant").trim().replace(/[^a-z0-9]+/gi,"_").replace(/^_+|_+$/g,"");return"AI4ALL_Module3_"+(name||"Participant")+"_Completed.pdf";}
+    async function exportPdf(openEmail){const box=document.getElementById("exportAlert"),recipient=value("recipientEmail").trim();if(openEmail&&!recipient){box.className="alert info show";box.textContent="Please enter the recipient's email address.";return;}if(currentPercent<100&&!window.confirm("Your handout is "+currentPercent+"% complete. Do you want to export it as a draft?"))return;box.className="alert info show";box.textContent="Creating your PDF…";const filename=fileName();try{const doc=await createPdf();if(doc){doc.save(filename);box.className="alert success show";box.textContent="PDF downloaded. "+(openEmail?"Your email application will open next—attach the downloaded PDF before sending.":"Your completed handout is ready.");}else{document.body.classList.add("printing");box.className="alert info show";box.textContent="The PDF library is unavailable. Choose “Save as PDF” in the print window.";window.print();document.body.classList.remove("printing");}if(openEmail){const participant=value("participantName")||"Participant",subject="AI4ALL Module 3 Completed Handout - "+participant,bodyText="Dear Dr. Rawhi,\r\n\r\nPlease find attached my completed Module 3 interactive handout.\r\n\r\nParticipant: "+participant+"\r\nDepartment / Organization: "+value("participantDepartment")+"\r\n\r\nImportant: Please attach the downloaded file named "+filename+" before sending.\r\n\r\nBest regards,\r\n"+participant,body=encodeURIComponent(bodyText),url=value("emailApp")==="outlook"?"https://outlook.office.com/mail/deeplink/compose?to="+encodeURIComponent(recipient)+"&subject="+encodeURIComponent(subject)+"&body="+body:"mailto:"+encodeURIComponent(recipient)+"?subject="+encodeURIComponent(subject)+"&body="+body;setTimeout(()=>{window.location.href=url;},450);}}catch(error){box.className="alert info show";box.textContent="The PDF could not be created. Please try again or use your browser's Print command and choose “Save as PDF.”";console.error(error);}}
+    function findFirstMissing(){const fields=[...form.querySelectorAll("[data-required]")],visited=new Set(),missing=fields.find(el=>{if(el.type==="radio"){if(visited.has(el.name))return false;visited.add(el.name);}return!isFilled(el);});if(!missing)return;showStep(Number(missing.dataset.stepRequired));setTimeout(()=>{const target=missing.type==="radio"?form.querySelector('input[name="'+CSS.escape(missing.name)+'"]'):missing;target?.focus();target?.scrollIntoView({behavior:"smooth",block:"center"});},300);}
+    function registerWebMcpTools(){const context=document.modelContext;if(!context?.registerTool)return;const allowed=new Set([...form.querySelectorAll("input,textarea,select")].filter(el=>el.type!=="file").map(el=>el.type==="radio"?el.name:el.id)),report=e=>console.warn("WebMCP tool registration failed",e),register=tool=>{try{void Promise.resolve(context.registerTool(tool)).catch(report);}catch(e){report(e);}};
+      register({name:"get_workshop_progress",title:"Get workshop progress",description:"Read the participant's current Module 3 handout completion percentage and active activity.",inputSchema:{type:"object",properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute(){const s=requiredStats();return{percent:s.percent,completedRequiredFields:s.filled,totalRequiredFields:s.total,activeStep:currentStep};}});
+      register({name:"navigate_workshop_activity",title:"Open workshop activity",description:"Open one activity in the visible Module 3 handout. Steps are numbered 0 through 5.",inputSchema:{type:"object",properties:{step:{type:"integer",minimum:0,maximum:5}},required:["step"],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){if(!Number.isInteger(input?.step)||input.step<0||input.step>5)throw new Error("Step must be an integer from 0 to 5.");showStep(input.step);return{activeStep:currentStep};}});
+      register({name:"update_workshop_answers",title:"Update workshop answers",description:"Update one or more visible handout fields using field IDs and text, choice, or boolean values.",inputSchema:{type:"object",properties:{answers:{type:"object",additionalProperties:{type:["string","boolean"]}}},required:["answers"],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){if(!input?.answers||typeof input.answers!=="object"||Array.isArray(input.answers))throw new Error("answers must be an object.");const updated=[];for(const[field,fieldValue]of Object.entries(input.answers)){if(!allowed.has(field))throw new Error("Unknown or unsupported field: "+field);const direct=document.getElementById(field);if(direct){if(direct.type==="checkbox")direct.checked=Boolean(fieldValue);else direct.value=String(fieldValue);}else{const radio=[...form.querySelectorAll('input[name="'+CSS.escape(field)+'"]')].find(el=>el.value===String(fieldValue));if(!radio)throw new Error("Invalid choice for field: "+field);radio.checked=true;}updated.push(field);}saveState();updateProgress();return{updatedFields:updated,progress:currentPercent};}});
+    }
+    renderDynamicContent();restoreState();showStep(currentStep,false);restoreImages();updateProgress();registerWebMcpTools();
+    form.addEventListener("input",e=>{if(e.target.type==="file")handleImageInput(e.target);else scheduleSave();});
+    form.addEventListener("change",e=>{if(e.target.type!=="file")scheduleSave();});
+    navButtons.forEach(b=>b.addEventListener("click",()=>showStep(Number(b.dataset.step))));
+    document.querySelectorAll("[data-next]").forEach(b=>b.addEventListener("click",()=>showStep(Number(b.dataset.next))));
+    document.querySelectorAll("[data-back]").forEach(b=>b.addEventListener("click",()=>showStep(Number(b.dataset.back))));
+    document.querySelectorAll("[data-remove-image]").forEach(b=>b.addEventListener("click",async()=>{const id=b.dataset.removeImage;try{await imageDb("delete",id);}catch(_){ }document.getElementById(id).value="";showImagePreview(id,null);}));
+    document.getElementById("reviewMissing").addEventListener("click",findFirstMissing);
+    document.getElementById("downloadOnly").addEventListener("click",()=>exportPdf(false));
+    document.getElementById("downloadEmail").addEventListener("click",()=>exportPdf(true));
+    document.getElementById("clearWork").addEventListener("click",()=>{if(!window.confirm("Clear all answers and uploaded images from this browser? This cannot be undone."))return;localStorage.removeItem(STORAGE_KEY);try{indexedDB.deleteDatabase(IMAGE_DB);}catch(_){ }window.location.reload();});
+    window.addEventListener("beforeunload",saveState);
+  })();
+  </script>
+</body>
+</html>
