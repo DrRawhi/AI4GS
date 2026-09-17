@@ -73,15 +73,22 @@ body {
 }
 
 .button {
-    display: inline-block;
-    padding: 8px 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 220px;
+    height: 50px;
+    box-sizing: border-box;
+
     background-color: #c8102e;
     color: white;
-	font-weight: bold;
-	font-size: 20px;
+    font-weight: bold;
+    font-size: 20px;
     text-decoration: none;
     border-radius: 5px;
     margin-top: 10px;
+    text-align: center;
 }
 
 .button.primary {
@@ -428,7 +435,7 @@ body {
     <!-- Email Button -->
     <p>
 	    <a class="button"
-	        href="mailto:rawhi@uaeu.ac.ae,BAlrei@uaeu.ac.ae?subject=AI4GS%20Inquiry">
+	        href="mailto:rawhi@uaeu.ac.ae?subject=AI4GS%20Inquiry">
 	        📧 Send Email
 	    </a>
 	</p>
